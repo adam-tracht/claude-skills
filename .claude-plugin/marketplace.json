@@ -6,9 +6,49 @@
     "name": "Adam Tracht"
   },
   "plugins": [
-    "./deslop",
-    "./caveman",
-    "./council",
-    "./obsidian-vault"
+    {
+      "name": "deslop",
+      "description": "Remove AI writing patterns from prose to make it sound like a specific human wrote it, not a language model.",
+      "author": { "name": "Adam Tracht" },
+      "category": "writing",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/adam-tracht/claude-skills.git",
+        "path": "deslop"
+      }
+    },
+    {
+      "name": "caveman",
+      "description": "Ultra-compressed communication mode. Cut all filler, speak only essentials.",
+      "author": { "name": "Adam Tracht" },
+      "category": "productivity",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/adam-tracht/claude-skills.git",
+        "path": "caveman"
+      }
+    },
+    {
+      "name": "council",
+      "description": "Multi-perspective deliberation using parallel subagents with distinct personas.",
+      "author": { "name": "Adam Tracht" },
+      "category": "productivity",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/adam-tracht/claude-skills.git",
+        "path": "council"
+      }
+    },
+    {
+      "name": "obsidian-vault",
+      "description": "Search, read, create, and manage notes in the Obsidian vault (Second Brain).",
+      "author": { "name": "Adam Tracht" },
+      "category": "productivity",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/adam-tracht/claude-skills.git",
+        "path": "obsidian-vault"
+      }
+    }
   ]
 }
