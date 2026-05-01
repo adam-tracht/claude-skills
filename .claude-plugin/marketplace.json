@@ -1,0 +1,11 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "adam-tracht-skills",
+  "description": "Personal Claude Code skills: deslop, caveman, council, obsidian-vault",
+  "plugins": [
+    "./deslop",
+    "./caveman",
+    "./council",
+    "./obsidian-vault"
+  ]
+}
