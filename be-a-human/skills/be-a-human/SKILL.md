@@ -1,5 +1,5 @@
 ---
-name: deslop
+name: be-a-human
 description: Remove AI writing patterns from prose to make it sound like a specific human wrote it, not a language model. Use when the user asks to "deslop", "de-AI", "make it sound human", "remove AI patterns", "clean up AI writing", or fix "slop". Also use when editing or reviewing blog posts, newsletters, articles, reports, memos, or scientific writing (manuscripts, abstracts, grant narratives, peer review responses) where natural voice matters. Trigger proactively whenever producing substantial prose that needs to read as genuinely human-authored.
 ---
 

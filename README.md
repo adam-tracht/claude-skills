@@ -1,11 +1,11 @@
 # Claude Skills
 
-Personal Claude Code skills: deslop, caveman, council, obsidian-vault.
+Personal Claude Code skills: be-a-human, caveman, council, obsidian-vault.
 
 ## Skills
 
-### deslop
-Removes AI writing patterns from prose. Invoke with `/deslop` or paste the text you want cleaned. Covers AI vocabulary, copula avoidance, formulaic structures, formatting tells, filler, and more. Includes a full pattern catalog in `references/patterns.md`.
+### be-a-human
+Removes AI writing patterns from prose. Invoke with `/be-a-human` or paste the text you want cleaned. Covers AI vocabulary, copula avoidance, formulaic structures, formatting tells, filler, and more. Includes a full pattern catalog in `references/patterns.md`.
 
 ### caveman
 Ultra-compressed communication mode. Cuts all filler and responds in minimal, direct language.
@@ -25,14 +25,14 @@ Search, read, create, and manage notes in an Obsidian vault. Supports the Local 
 Skills live at `~/.claude/skills/<skill-name>/SKILL.md`. To install a skill from this repo, create the directory and download the file:
 
 ```bash
-mkdir -p ~/.claude/skills/deslop
-curl -o ~/.claude/skills/deslop/SKILL.md \
-  https://raw.githubusercontent.com/adam-tracht/claude-skills/main/deslop/skills/deslop/SKILL.md
+mkdir -p ~/.claude/skills/be-a-human
+curl -o ~/.claude/skills/be-a-human/SKILL.md \
+  https://raw.githubusercontent.com/adam-tracht/claude-skills/main/be-a-human/skills/be-a-human/SKILL.md
 
-# deslop also has a reference file:
-mkdir -p ~/.claude/skills/deslop/references
-curl -o ~/.claude/skills/deslop/references/patterns.md \
-  https://raw.githubusercontent.com/adam-tracht/claude-skills/main/deslop/skills/deslop/references/patterns.md
+# be-a-human also has a reference file:
+mkdir -p ~/.claude/skills/be-a-human/references
+curl -o ~/.claude/skills/be-a-human/references/patterns.md \
+  https://raw.githubusercontent.com/adam-tracht/claude-skills/main/be-a-human/skills/be-a-human/references/patterns.md
 ```
 
 No JSON files to edit, no CLI needed. Claude Code watches `~/.claude/skills/` automatically — the skill is available immediately in new sessions.
@@ -48,7 +48,7 @@ This repo is registered as a plugin marketplace, which handles fetching and plac
 claude plugins marketplace add adam-tracht/claude-skills
 
 # Install whichever skills you want
-claude plugins install deslop@adam-tracht-skills
+claude plugins install be-a-human@adam-tracht-skills
 claude plugins install caveman@adam-tracht-skills
 claude plugins install council@adam-tracht-skills
 claude plugins install obsidian-vault@adam-tracht-skills
@@ -69,7 +69,7 @@ your-project/
 ### Claude.ai (web)
 
 1. Download the `SKILL.md` file for the skill you want
-2. Create a folder with the skill name (e.g. `deslop`)
+2. Create a folder with the skill name (e.g. `be-a-human`)
 3. Put `SKILL.md` inside it and zip the folder
 4. In Claude.ai: **Customize > Skills > + Create skill > Upload a skill**
 5. Toggle the skill on after upload
@@ -77,8 +77,8 @@ your-project/
 The folder name inside the zip must match the `name` field in the SKILL.md frontmatter. A flat zip with SKILL.md at the root won't work.
 
 ```
-deslop.zip
-└── deslop/
+be-a-human.zip
+└── be-a-human/
     └── SKILL.md
 ```
 
