@@ -1,6 +1,6 @@
 # Claude Skills
 
-Personal Claude Code skills.
+Personal Claude Code skills: deslop, caveman, council, obsidian-vault.
 
 ## Skills
 
@@ -14,21 +14,65 @@ Ultra-compressed communication mode. Cuts all filler and responds in minimal, di
 Multi-perspective deliberation using parallel subagents. Each councilor (Skeptic, Advocate, Pragmatist, First-Principles, Minimalist) responds independently, a neutral panel evaluates, and a Chairman synthesizes. Good for decisions where you want genuine push-back before committing.
 
 ### obsidian-vault
-Search, read, create, and manage notes in an Obsidian vault. Supports the Local REST API plugin (preferred) with filesystem fallback. Requires device-specific configuration after install — see the note below.
+Search, read, create, and manage notes in an Obsidian vault. Supports the Local REST API plugin (preferred) with filesystem fallback. Requires device-specific configuration after install — see the note at the bottom.
 
 ---
 
-## Using a skill from any repo
+## Installation
 
-If you find a `SKILL.md` file anywhere (this repo or someone else's), here's how to use it.
+### Claude Code — manual (simplest)
+
+Skills live at `~/.claude/skills/<skill-name>/SKILL.md`. To install a skill from this repo, create the directory and download the file:
+
+```bash
+mkdir -p ~/.claude/skills/deslop
+curl -o ~/.claude/skills/deslop/SKILL.md \
+  https://raw.githubusercontent.com/adam-tracht/claude-skills/main/deslop/skills/deslop/SKILL.md
+
+# deslop also has a reference file:
+mkdir -p ~/.claude/skills/deslop/references
+curl -o ~/.claude/skills/deslop/references/patterns.md \
+  https://raw.githubusercontent.com/adam-tracht/claude-skills/main/deslop/skills/deslop/references/patterns.md
+```
+
+No JSON files to edit, no CLI needed. Claude Code watches `~/.claude/skills/` automatically — the skill is available immediately in new sessions.
+
+Invoke with `/skill-name` or describe your task and Claude picks it up automatically based on the skill description.
+
+### Claude Code — marketplace (faster for installing multiple skills)
+
+This repo is registered as a plugin marketplace, which handles fetching and placement automatically:
+
+```bash
+# Register the marketplace (one-time)
+claude plugins marketplace add adam-tracht/claude-skills
+
+# Install whichever skills you want
+claude plugins install deslop@adam-tracht-skills
+claude plugins install caveman@adam-tracht-skills
+claude plugins install council@adam-tracht-skills
+claude plugins install obsidian-vault@adam-tracht-skills
+```
+
+### Claude Code — project-level skills
+
+To make a skill available only within a specific project, put it in `.claude/skills/` inside that project and commit it:
+
+```
+your-project/
+└── .claude/
+    └── skills/
+        └── my-skill/
+            └── SKILL.md
+```
 
 ### Claude.ai (web)
 
-1. Create a folder named after the skill (lowercase, hyphens only — e.g. `deslop`)
-2. Put `SKILL.md` inside it
-3. Zip the folder
+1. Download the `SKILL.md` file for the skill you want
+2. Create a folder with the skill name (e.g. `deslop`)
+3. Put `SKILL.md` inside it and zip the folder
 4. In Claude.ai: **Customize > Skills > + Create skill > Upload a skill**
-5. Toggle the skill on after it appears in your list
+5. Toggle the skill on after upload
 
 The folder name inside the zip must match the `name` field in the SKILL.md frontmatter. A flat zip with SKILL.md at the root won't work.
 
@@ -40,64 +84,16 @@ deslop.zip
 
 **Prerequisite:** Settings > Capabilities > **Code execution and file creation** must be enabled.
 
-### Claude Code — quick test (session only)
-
-```bash
-claude --plugin-dir ./deslop
-```
-
-Loads the skill for that session without installing anything permanently.
-
-### Claude Code — permanent install from this repo
-
-This repo is registered as a marketplace:
-
-```bash
-# Register the marketplace (one-time)
-claude plugins marketplace add adam-tracht/claude-skills
-
-# Install individual skills
-claude plugins install deslop@adam-tracht-skills
-claude plugins install caveman@adam-tracht-skills
-claude plugins install council@adam-tracht-skills
-claude plugins install obsidian-vault@adam-tracht-skills
-```
-
-### Claude Code — permanent install from any other repo
-
-If the repo contains a single plugin with a `.claude-plugin/plugin.json` at its root:
-
-```bash
-claude plugins install https://github.com/owner/repo
-```
-
-If it's just a folder of SKILL.md files with no plugin structure, you'll need to add the folder as a local marketplace first:
-
-```bash
-claude plugins marketplace add ./path/to/local/folder
-claude plugins install skill-name@folder-name
-```
-
----
-
-## Slash commands
-
-After installing a skill in Claude Code, you can optionally add a slash command so you can invoke it with `/skill-name`. Create a file at `~/.claude/commands/<skill-name>.md`:
-
-```
-Invoke the `<skill-name>:<skill-name>` skill now. $ARGUMENTS
-```
-
 ---
 
 ## SKILL.md frontmatter
 
-Every `SKILL.md` needs a frontmatter block or it won't be recognized:
+`description` is recommended so Claude knows when to invoke the skill automatically. `name` defaults to the directory name if omitted.
 
 ```yaml
 ---
-name: skill-name       # required — kebab-case, max 64 chars
-description: "..."     # required — max 200 chars
+name: skill-name        # optional — defaults to directory name
+description: "..."      # recommended — tells Claude when to use this skill
 ---
 ```
 
@@ -105,10 +101,9 @@ description: "..."     # required — max 200 chars
 
 ## Note on obsidian-vault
 
-The `obsidian-vault` skill connects to Obsidian's Local REST API plugin. The auth token and port are generated per device, so the version in this repo ships with a placeholder token. After installing, patch your token and port into the installed SKILL.md:
+The `obsidian-vault` skill connects to Obsidian's Local REST API plugin. The auth token and port are generated per device, so the version in this repo ships with a placeholder token. After installing, open the SKILL.md and replace `YOUR_TOKEN_HERE` with your actual token.
 
-```
-~/.claude/plugins/cache/adam-tracht-skills/obsidian-vault/<version>/skills/obsidian-vault/SKILL.md
-```
+For the manual install, that file is at `~/.claude/skills/obsidian-vault/SKILL.md`.
+For the marketplace install, it's at `~/.claude/plugins/cache/adam-tracht-skills/obsidian-vault/<version>/skills/obsidian-vault/SKILL.md`.
 
 Find your token in Obsidian: **Settings > Local REST API**.
