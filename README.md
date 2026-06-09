@@ -1,6 +1,6 @@
 # Claude Skills
 
-Personal Claude Code skills: be-a-human, caveman, council, obsidian-vault.
+Personal Claude Code skills: be-a-human, caveman, council, obsidian-vault, plan.
 
 ## Skills
 
@@ -15,6 +15,9 @@ Multi-perspective deliberation using parallel subagents. Each councilor (Skeptic
 
 ### obsidian-vault
 Search, read, create, and manage notes in an Obsidian vault. Supports the Local REST API plugin (preferred) with filesystem fallback. Requires device-specific configuration after install — see the note at the bottom.
+
+### plan
+Scope a feature, bug-sweep, or project, discuss the approach in chat, then on your go write a phased plan doc to `plans/` at the repo root. Resumable across sessions: ask "what's left from @plans/x.md" and it picks up where it left off. Designed for solo devs who want structure without PR/CI ceremony.
 
 ---
 
@@ -52,6 +55,7 @@ claude plugins install be-a-human@adam-tracht-skills
 claude plugins install caveman@adam-tracht-skills
 claude plugins install council@adam-tracht-skills
 claude plugins install obsidian-vault@adam-tracht-skills
+claude plugins install plan@adam-tracht-skills
 ```
 
 ### Claude Code — project-level skills

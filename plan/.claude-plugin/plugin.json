@@ -1,0 +1,4 @@
+{
+  "name": "plan",
+  "description": "Scope a feature/bug-sweep/project, discuss the approach, and write a phased plan doc that lives in the repo and is resumed across sessions. Invoke with /plan."
+}
