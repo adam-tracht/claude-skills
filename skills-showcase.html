@@ -1,0 +1,654 @@
+<title>Claude Skills — a small cabinet of five</title>
+<style>
+  :root {
+    /* neutrals, biased slightly cool blue-violet so they read as "software" */
+    --paper:    #f4f4f6;
+    --surface:  #fbfbfd;
+    --panel:    #f0f0f3;
+    --ink:      #1a1b22;
+    --ink-soft: #3d3f4a;
+    --muted:    #6c6e7a;
+    --hairline: #e2e2e7;
+    --hairline-strong: #d3d3da;
+
+    /* five-hue accent family, similar chroma, one per skill */
+    --acc-human:    #c0506c;
+    --acc-caveman:  #a2761c;
+    --acc-council:  #4f5bd5;
+    --acc-obsidian: #8b46bf;
+    --acc-plan:     #1f8a7d;
+
+    --font-serif: "Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --font-sans:  -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-mono:  ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+
+    --maxw: 1080px;
+    --radius: 4px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:    #101015;
+      --surface:  #17181f;
+      --panel:    #1c1d25;
+      --ink:      #e9e9ee;
+      --ink-soft: #c3c4cd;
+      --muted:    #8f909d;
+      --hairline: #2a2b34;
+      --hairline-strong: #363843;
+
+      --acc-human:    #e88aa0;
+      --acc-caveman:  #d6a53e;
+      --acc-council:  #929af1;
+      --acc-obsidian: #c28ae8;
+      --acc-plan:     #4fc2b3;
+    }
+  }
+  /* viewer toggle must win in both directions */
+  :root[data-theme="light"] {
+    --paper:#f4f4f6; --surface:#fbfbfd; --panel:#f0f0f3;
+    --ink:#1a1b22; --ink-soft:#3d3f4a; --muted:#6c6e7a;
+    --hairline:#e2e2e7; --hairline-strong:#d3d3da;
+    --acc-human:#c0506c; --acc-caveman:#a2761c; --acc-council:#4f5bd5;
+    --acc-obsidian:#8b46bf; --acc-plan:#1f8a7d;
+  }
+  :root[data-theme="dark"] {
+    --paper:#101015; --surface:#17181f; --panel:#1c1d25;
+    --ink:#e9e9ee; --ink-soft:#c3c4cd; --muted:#8f909d;
+    --hairline:#2a2b34; --hairline-strong:#363843;
+    --acc-human:#e88aa0; --acc-caveman:#d6a53e; --acc-council:#929af1;
+    --acc-obsidian:#c28ae8; --acc-plan:#4fc2b3;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
+
+  a { color: inherit; }
+
+  /* ---------- eyebrow / labels ---------- */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ---------- header ---------- */
+  header.top {
+    border-bottom: 1px solid var(--hairline);
+    padding: 92px 0 0;
+  }
+  .lede { max-width: 40rem; }
+  .lede h1 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    margin: 18px 0 0;
+  }
+  .lede h1 .machine { font-family: var(--font-mono); font-weight: 500; letter-spacing: -0.02em; }
+  .lede p {
+    font-size: 1.14rem;
+    color: var(--ink-soft);
+    max-width: 34rem;
+    margin: 22px 0 0;
+    text-wrap: pretty;
+  }
+  .byline { margin: 30px 0 0; color: var(--muted); font-size: 0.9rem; }
+
+  /* command index row */
+  .index {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 40px 0 -1px;
+  }
+  .cmd {
+    --accent: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 9px 15px 9px 13px;
+    border: 1px solid var(--hairline-strong);
+    border-radius: 999px;
+    background: var(--surface);
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    transition: border-color .18s ease, transform .18s ease, background .18s ease;
+  }
+  .cmd .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent);
+    flex: none;
+  }
+  .cmd:hover, .cmd:focus-visible {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+    transform: translateY(-2px);
+    outline: none;
+  }
+  .cmd:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 32%, transparent); }
+
+  /* ---------- skill band ---------- */
+  .skill {
+    border-bottom: 1px solid var(--hairline);
+    padding: 64px 0;
+    scroll-margin-top: 24px;
+  }
+  .skill-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+  }
+  .skill-cmd {
+    font-family: var(--font-mono);
+    font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  .skill-cmd .slash { opacity: 0.45; }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--hairline));
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+    padding: 4px 9px;
+    border-radius: 999px;
+    align-self: center;
+  }
+  .what {
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 2.6vw, 1.6rem);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    max-width: 30rem;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .skill-head .what { flex-basis: 100%; margin-top: 6px; }
+
+  .skill-body {
+    display: grid;
+    grid-template-columns: 1fr 1.12fr;
+    gap: 40px;
+    margin-top: 36px;
+    align-items: start;
+  }
+  @media (max-width: 760px) {
+    .skill-body { grid-template-columns: 1fr; gap: 30px; }
+  }
+
+  .prose p { margin: 0 0 16px; color: var(--ink-soft); }
+  .prose p:last-child { margin-bottom: 0; }
+
+  .mech {
+    list-style: none;
+    margin: 22px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .mech li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid var(--hairline);
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+  .mech li:last-child { border-bottom: 1px solid var(--hairline); }
+  .mech .k {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-top: 2px;
+    white-space: nowrap;
+  }
+  .mech .k::before { content: "▚ "; opacity: .5; }
+
+  .trigger {
+    margin-top: 24px;
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+  .trigger b { color: var(--ink-soft); font-weight: 600; }
+
+  /* ---------- demo panel ---------- */
+  .demo {
+    background: var(--surface);
+    border: 1px solid var(--hairline-strong);
+    border-radius: var(--radius);
+    border-top: 3px solid var(--accent);
+    overflow: hidden;
+  }
+  .demo-cap {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--hairline);
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .demo-cap .live { color: var(--accent); }
+  .demo-body { padding: 18px; overflow-x: auto; }
+  .mono { font-family: var(--font-mono); font-size: 0.84rem; line-height: 1.65; }
+
+  /* be-a-human: before/after */
+  .ba-row + .ba-row { margin-top: 16px; }
+  .ba-label {
+    font-family: var(--font-mono);
+    font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .ba-before {
+    font-family: var(--font-serif); font-size: 1.02rem; color: var(--muted);
+    text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--accent) 65%, transparent);
+    text-decoration-thickness: 1.5px;
+  }
+  .ba-after { font-family: var(--font-serif); font-size: 1.08rem; color: var(--ink); }
+  .ba-after .flag { color: var(--accent); }
+  .ba-score {
+    margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--hairline);
+    display: flex; flex-wrap: wrap; gap: 6px 18px;
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--muted);
+  }
+  .ba-score b { color: var(--accent); font-variant-numeric: tabular-nums; }
+
+  /* caveman: compression ladder + bar */
+  .lvl { display: grid; grid-template-columns: auto 1fr; gap: 14px; padding: 9px 0; align-items: baseline; }
+  .lvl + .lvl { border-top: 1px solid var(--hairline); }
+  .lvl .name {
+    font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+  .lvl .txt { font-family: var(--font-mono); font-size: 0.83rem; color: var(--ink-soft); }
+  .bar-wrap { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--hairline); }
+  .bar-row { display: grid; grid-template-columns: 62px 1fr 52px; align-items: center; gap: 10px; margin-top: 8px; }
+  .bar-row .bl { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .track { height: 12px; background: var(--panel); border-radius: 3px; overflow: hidden; }
+  .fill { height: 100%; border-radius: 3px; }
+  .fill.norm { width: 100%; background: color-mix(in srgb, var(--muted) 45%, var(--panel)); }
+  .fill.cave { width: 25%; background: var(--accent); }
+  .bar-row .pct { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-soft); text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* council: flow */
+  .flow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .stage { flex: 1 1 auto; min-width: 0; }
+  .stage-cap {
+    font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .chips { display: flex; flex-direction: column; gap: 6px; }
+  .chip {
+    font-family: var(--font-mono); font-size: 0.74rem;
+    padding: 6px 9px; border-radius: 3px;
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--hairline));
+    background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+    color: var(--ink-soft);
+  }
+  .chip.solo {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+    color: var(--ink); font-weight: 600;
+  }
+  .arrow { color: var(--accent); font-size: 1.2rem; flex: none; opacity: 0.7; }
+  @media (max-width: 900px) and (min-width: 761px) { .arrow { transform: none; } }
+
+  /* obsidian: tree */
+  .tree { font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.75; color: var(--ink-soft); white-space: pre; }
+  .tree .dir { color: var(--accent); }
+  .tree .note { color: var(--muted); }
+
+  /* plan: doc skeleton */
+  .plandoc { font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.7; }
+  .plandoc .h { color: var(--ink); font-weight: 600; }
+  .plandoc .ph { color: var(--accent); margin-top: 10px; }
+  .plandoc .item { color: var(--ink-soft); }
+  .plandoc .done .box { color: var(--acc-plan); }
+  .plandoc .muted { color: var(--muted); }
+  .plandoc .box { font-family: var(--font-mono); }
+
+  /* ---------- footer ---------- */
+  footer {
+    padding: 56px 0 84px;
+  }
+  .install {
+    background: var(--surface);
+    border: 1px solid var(--hairline-strong);
+    border-radius: var(--radius);
+    padding: 26px 28px;
+    max-width: 44rem;
+  }
+  .install h3 { font-family: var(--font-serif); font-weight: 600; font-size: 1.35rem; margin: 0 0 6px; }
+  .install p { color: var(--ink-soft); margin: 0 0 16px; font-size: 0.96rem; }
+  .code {
+    font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.7;
+    background: var(--panel); border: 1px solid var(--hairline);
+    border-radius: var(--radius); padding: 14px 16px; overflow-x: auto;
+    color: var(--ink-soft); white-space: pre;
+  }
+  .code .c { color: var(--muted); }
+  .foot-note { margin-top: 26px; color: var(--muted); font-size: 0.84rem; max-width: 42rem; }
+
+  /* section accent binding */
+  #be-a-human   { --accent: var(--acc-human); }
+  #caveman      { --accent: var(--acc-caveman); }
+  #council      { --accent: var(--acc-council); }
+  #obsidian     { --accent: var(--acc-obsidian); }
+  #plan         { --accent: var(--acc-plan); }
+  .cmd.c-human    { --accent: var(--acc-human); }
+  .cmd.c-caveman  { --accent: var(--acc-caveman); }
+  .cmd.c-council  { --accent: var(--acc-council); }
+  .cmd.c-obsidian { --accent: var(--acc-obsidian); }
+  .cmd.c-plan     { --accent: var(--acc-plan); }
+
+  /* load-in stagger */
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .stagger > * { animation: rise .5s cubic-bezier(.2,.7,.3,1) both; }
+  .stagger > *:nth-child(1){ animation-delay: .05s; }
+  .stagger > *:nth-child(2){ animation-delay: .11s; }
+  .stagger > *:nth-child(3){ animation-delay: .17s; }
+  .stagger > *:nth-child(4){ animation-delay: .23s; }
+  .stagger > *:nth-child(5){ animation-delay: .29s; }
+  @media (prefers-reduced-motion: reduce) {
+    .stagger > * { animation: none; }
+    .cmd { transition: none; }
+  }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="lede">
+      <span class="eyebrow">Claude Code · personal skills · by Adam Tracht</span>
+      <h1>Five ways to change how <span class="machine">Claude</span> works.</h1>
+      <p>A small cabinet of skills for Claude Code, arranged along one axis: how human or how machine you want the work to feel. One deslops the prose. One talks like a caveman. One convenes a council of subagents. One runs a second brain. One keeps your plans honest.</p>
+      <p class="byline">Type the slash command, or describe the task and Claude reaches for the right one on its own.</p>
+    </div>
+
+    <nav class="index stagger" aria-label="Skills">
+      <a class="cmd c-human" href="#be-a-human"><span class="dot"></span>/be-a-human</a>
+      <a class="cmd c-caveman" href="#caveman"><span class="dot"></span>/caveman</a>
+      <a class="cmd c-council" href="#council"><span class="dot"></span>/council</a>
+      <a class="cmd c-obsidian" href="#obsidian"><span class="dot"></span>/obsidian-vault</a>
+      <a class="cmd c-plan" href="#plan"><span class="dot"></span>/plan</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ be-a-human ============ -->
+  <section class="skill" id="be-a-human">
+    <div class="skill-head">
+      <span class="skill-cmd"><span class="slash">/</span>be-a-human</span>
+      <span class="tag">Prose</span>
+      <p class="what">Strips the AI tells out of writing so it reads like a specific person wrote it, not a language model.</p>
+    </div>
+    <div class="skill-body">
+      <div class="prose">
+        <p>It runs a catalog of patterns that give machine writing away: filler openers, copula avoidance, the tapestry-of-vibrant-nuance vocabulary, binary contrasts, passive fragments that hide who did the thing. It cuts them, names the actor, varies the rhythm, and then self-audits for whatever still smells synthetic.</p>
+        <ul class="mech">
+          <li><span class="k">cut</span><span>Filler and AI vocabulary: <em>delve, tapestry, pivotal, testament, underscore</em>. And copula dodges like "serves as."</span></li>
+          <li><span class="k">actor</span><span>Passive voice and subjectless fragments hide who acts. Name the human doing the thing.</span></li>
+          <li><span class="k">rhythm</span><span>Mix sentence lengths, trust the reader, never an em dash.</span></li>
+          <li><span class="k">score</span><span>Rates 1–10 on directness, rhythm, trust, authenticity, density. Below 7 average means revise.</span></li>
+        </ul>
+        <p class="trigger"><b>Reaches for it when</b> you say "deslop" or "make it sound human," or any time it's drafting prose meant to pass as genuinely human-authored.</p>
+      </div>
+
+      <div class="demo" aria-label="Before and after example">
+        <div class="demo-cap"><span>edit pass</span><span class="live">before → after</span></div>
+        <div class="demo-body">
+          <div class="ba-row">
+            <div class="ba-label">slop</div>
+            <div class="ba-before">It's worth noting that this pivotal feature serves as a testament to our unwavering commitment.</div>
+          </div>
+          <div class="ba-row">
+            <div class="ba-label">human</div>
+            <div class="ba-after">This feature <span class="flag">proves</span> we mean it.</div>
+          </div>
+          <div class="ba-score">
+            <span>directness <b>9</b></span>
+            <span>rhythm <b>8</b></span>
+            <span>trust <b>9</b></span>
+            <span>density <b>9</b></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ caveman ============ -->
+  <section class="skill" id="caveman">
+    <div class="skill-head">
+      <span class="skill-cmd"><span class="slash">/</span>caveman</span>
+      <span class="tag">Comms</span>
+      <p class="what">Ultra-compressed replies. Roughly 75% fewer tokens, every bit of the technical substance kept.</p>
+    </div>
+    <div class="skill-body">
+      <div class="prose">
+        <p>Speak terse like smart caveman. Drop articles, filler, and pleasantries; keep the exact technical terms, code, and quoted errors. Three intensity levels turn the dial from tight-professional to telegram. The mode persists every response until you call it off.</p>
+        <ul class="mech">
+          <li><span class="k">drop</span><span>Articles, hedging, "happy to help." Fragments fine. Short synonyms: <em>big</em> not <em>extensive</em>.</span></li>
+          <li><span class="k">levels</span><span><em>lite</em> keeps full sentences, <em>full</em> is classic caveman, <em>ultra</em> abbreviates and uses arrows for causality.</span></li>
+          <li><span class="k">safe</span><span>Code, commits, PRs, and destructive-action warnings snap back to plain English.</span></li>
+        </ul>
+        <p class="trigger"><b>Reaches for it when</b> you say "caveman mode," "be brief," or "less tokens." Auto-triggers when efficiency is asked for.</p>
+      </div>
+
+      <div class="demo" aria-label="Compression levels">
+        <div class="demo-cap"><span>"why react component re-render?"</span><span class="live">3 levels</span></div>
+        <div class="demo-body">
+          <div class="lvl"><span class="name">lite</span><span class="txt">New object reference each render. Wrap it in <code>useMemo</code>.</span></div>
+          <div class="lvl"><span class="name">full</span><span class="txt">New obj ref each render. Inline prop = new ref = re-render. Wrap in <code>useMemo</code>.</span></div>
+          <div class="lvl"><span class="name">ultra</span><span class="txt">Inline obj prop → new ref → re-render. <code>useMemo</code>.</span></div>
+
+          <div class="bar-wrap">
+            <div class="bar-row">
+              <span class="bl">normal</span>
+              <span class="track"><span class="fill norm"></span></span>
+              <span class="pct">100%</span>
+            </div>
+            <div class="bar-row">
+              <span class="bl">caveman</span>
+              <span class="track"><span class="fill cave"></span></span>
+              <span class="pct">~25%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ council ============ -->
+  <section class="skill" id="council">
+    <div class="skill-head">
+      <span class="skill-cmd"><span class="slash">/</span>council</span>
+      <span class="tag">Reasoning</span>
+      <p class="what">Convenes 3–5 isolated subagents, each a distinct mind, then cross-ranks and synthesizes their answers.</p>
+    </div>
+    <div class="skill-body">
+      <div class="prose">
+        <p>The isolation is the whole mechanism. Each councilor answers your question with no memory of the conversation or of each other, so the personas produce real epistemic diversity instead of one model agreeing with itself. Neutral evaluators then rank the anonymized answers, and the Chairman writes the verdict.</p>
+        <ul class="mech">
+          <li><span class="k">stage 1</span><span>Councilors answer independently: Skeptic, Advocate, Pragmatist, plus First-Principles and Minimalist for hard calls.</span></li>
+          <li><span class="k">stage 2</span><span>Three neutral evaluators cross-rank the anonymized answers on accuracy, actionability, and completeness.</span></li>
+          <li><span class="k">stage 3</span><span>The Chairman names the fault line and takes a position instead of averaging.</span></li>
+        </ul>
+        <p class="trigger"><b>Reaches for it when</b> you say "council this," or a decision is complex, high-stakes, or genuinely contested.</p>
+      </div>
+
+      <div class="demo" aria-label="Council flow">
+        <div class="demo-cap"><span>deliberation</span><span class="live">3 stages</span></div>
+        <div class="demo-body">
+          <div class="flow">
+            <div class="stage">
+              <div class="stage-cap">councilors</div>
+              <div class="chips">
+                <span class="chip">Skeptic</span>
+                <span class="chip">Advocate</span>
+                <span class="chip">Pragmatist</span>
+                <span class="chip">First-Principles</span>
+                <span class="chip">Minimalist</span>
+              </div>
+            </div>
+            <span class="arrow" aria-hidden="true">→</span>
+            <div class="stage">
+              <div class="stage-cap">evaluators</div>
+              <div class="chips">
+                <span class="chip">Accuracy</span>
+                <span class="chip">Actionability</span>
+                <span class="chip">Completeness</span>
+              </div>
+            </div>
+            <span class="arrow" aria-hidden="true">→</span>
+            <div class="stage">
+              <div class="stage-cap">verdict</div>
+              <div class="chips">
+                <span class="chip solo">Chairman</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ obsidian-vault ============ -->
+  <section class="skill" id="obsidian">
+    <div class="skill-head">
+      <span class="skill-cmd"><span class="slash">/</span>obsidian-vault</span>
+      <span class="tag">Memory</span>
+      <p class="what">Reads, writes, and manages notes in the Obsidian "Second Brain" — the canonical source of truth.</p>
+    </div>
+    <div class="skill-body">
+      <div class="prose">
+        <p>The vault holds who Adam is, agent instructions, project context, and durable memory. The skill talks to it through Obsidian's Local REST API so edits index immediately, and falls back to the filesystem when the API is down. It already knows the folder map and where the important files live.</p>
+        <ul class="mech">
+          <li><span class="k">api</span><span>Local REST API first (self-signed cert, per-device port), plain filesystem read/write as fallback.</span></li>
+          <li><span class="k">map</span><span>Knows the vault layout and key files: <em>Adam.md</em>, shared agent rules, memory and writing conventions.</span></li>
+          <li><span class="k">links</span><span>Files new notes in the right folder and adds <em>[[wikilinks]]</em> to related notes.</span></li>
+        </ul>
+        <p class="trigger"><b>Reaches for it when</b> you mention notes, the vault, or the second brain. Needs a per-device token filled in after install.</p>
+      </div>
+
+      <div class="demo" aria-label="Vault structure">
+        <div class="demo-cap"><span>~/Second Brain</span><span class="live">structure</span></div>
+        <div class="demo-body">
+<div class="tree"><span class="dir">Second Brain/</span>
+├─ Home.md              <span class="note"># dual index</span>
+├─ <span class="dir">00-system/</span>            <span class="note"># architecture, instructions</span>
+├─ <span class="dir">02-memory/</span>            <span class="note"># memory + daily notes</span>
+├─ <span class="dir">03-people/</span>            <span class="note"># Adam.md + contacts</span>
+├─ <span class="dir">04-projects/</span>          <span class="note"># project docs</span>
+├─ <span class="dir">08-agents/</span>            <span class="note"># agent roles</span>
+├─ <span class="dir">Templates/</span>
+└─ <span class="dir">raw/</span>                  <span class="note"># articles, pdfs, transcripts</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ plan ============ -->
+  <section class="skill" id="plan">
+    <div class="skill-head">
+      <span class="skill-cmd"><span class="slash">/</span>plan</span>
+      <span class="tag">Workflow</span>
+      <p class="what">Scope work in chat, get one recommendation, then write a phased plan doc that survives across sessions.</p>
+    </div>
+    <div class="skill-body">
+      <div class="prose">
+        <p>A planning loop for solo devs who want structure without PR ceremony. It discusses the tradeoffs first and gives one honest recommendation. Nothing hits disk until your two-word go. Then it writes a phased doc to <code>plans/</code> that you can resume weeks later by asking what's left.</p>
+        <ul class="mech">
+          <li><span class="k">discuss</span><span>Scope the real problem, surface tradeoffs, one recommendation, then stop and wait for the go.</span></li>
+          <li><span class="k">phased</span><span>Doc grouped by impact and effort, not a flat list. Irreversible steps sequenced explicitly last.</span></li>
+          <li><span class="k">resume</span><span>"What's left from @plans/x.md" reads status and picks up. Ships flip to ✅ with an evidence note.</span></li>
+        </ul>
+        <p class="trigger"><b>Reaches for it when</b> you're scoping work, writing a PRD, or asking what's left from an existing plan.</p>
+      </div>
+
+      <div class="demo" aria-label="Plan document skeleton">
+        <div class="demo-cap"><span>plans/video-attachments.md</span><span class="live">phased</span></div>
+        <div class="demo-body">
+<div class="plandoc"><span class="h"># Video attachments</span>
+<span class="muted">Goal:</span> let users attach clips to a note
+<span class="muted">Status:</span> In progress
+
+<span class="ph">## Phase 1 — capture  (impact: high)</span>
+<span class="item done"><span class="box">✅</span> Upload + storage <span class="muted">· test: upload_spec</span></span>
+<span class="item"><span class="box">🔲</span> Transcode pipeline <span class="muted">· effort: M</span></span>
+
+<span class="ph">## Phase 2 — playback  (impact: med)</span>
+<span class="item"><span class="box">⬜</span> Inline player
+<span class="box">⬜</span> Thumbnails</span>
+
+<span class="ph">## Go-live  (sequence last)</span>
+<span class="item"><span class="box">⬜</span> Flip feature flag on</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="install">
+      <h3>Install one</h3>
+      <p>Skills live at <code>~/.claude/skills/&lt;name&gt;/SKILL.md</code>. Claude Code watches that folder, so a skill is live in the next session. No JSON, no CLI.</p>
+      <div class="code"><span class="c"># grab a single skill</span>
+mkdir -p ~/.claude/skills/be-a-human
+curl -o ~/.claude/skills/be-a-human/SKILL.md \
+  https://raw.githubusercontent.com/adam-tracht/claude-skills/main/be-a-human/skills/be-a-human/SKILL.md
+
+<span class="c"># or register the whole marketplace</span>
+claude plugins marketplace add adam-tracht/claude-skills
+claude plugins install council@adam-tracht-skills</div>
+      <p class="foot-note">One note on <code>obsidian-vault</code>: the REST API token is generated per device, so the version in the repo ships with a placeholder. Open the SKILL.md after install and drop in your real token from Obsidian's Local REST API settings.</p>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // smooth-scroll the command index to its section
+  document.querySelectorAll('.cmd').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      var id = el.getAttribute('href');
+      var target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      history.replaceState(null, '', id);
+    });
+  });
+</script>
