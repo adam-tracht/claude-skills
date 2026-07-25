@@ -1,0 +1,4 @@
+{
+  "name": "no-ai-slop",
+  "description": "Write and edit prose that reads as human, and audit copy for AI patterns. Mode-aware: drafting, editing, and detection each return a different shape of output."
+}
