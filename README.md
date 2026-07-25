@@ -1,6 +1,6 @@
 # Claude Skills
 
-Personal Claude Code skills: be-a-human, caveman, council, obsidian-vault, plan.
+Personal Claude Code skills: be-a-human, caveman, council, no-ai-slop, obsidian-vault, plan.
 
 ## Skills
 
@@ -12,6 +12,9 @@ Ultra-compressed communication mode. Cuts all filler and responds in minimal, di
 
 ### council
 Multi-perspective deliberation using parallel subagents. Each councilor (Skeptic, Advocate, Pragmatist, First-Principles, Minimalist) responds independently, a neutral panel evaluates, and a Chairman synthesizes. Good for decisions where you want genuine push-back before committing.
+
+### no-ai-slop
+Writes and edits prose that reads as human, and audits copy for AI patterns. Mode-aware: drafting returns prose only, editing returns the draft plus a short changelog, and detection returns named patterns with quoted lines and no rewrite. Ships an internal `eval.md` quality gate and a full pattern catalog in `references/patterns.md`. Supersedes `be-a-human`.
 
 ### obsidian-vault
 Search, read, create, and manage notes in an Obsidian vault. Supports the Local REST API plugin (preferred) with filesystem fallback. Requires device-specific configuration after install — see the note at the bottom.
@@ -54,6 +57,7 @@ claude plugins marketplace add adam-tracht/claude-skills
 claude plugins install be-a-human@adam-tracht-skills
 claude plugins install caveman@adam-tracht-skills
 claude plugins install council@adam-tracht-skills
+claude plugins install no-ai-slop@adam-tracht-skills
 claude plugins install obsidian-vault@adam-tracht-skills
 claude plugins install plan@adam-tracht-skills
 ```
